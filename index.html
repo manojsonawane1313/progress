@@ -3,511 +3,374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Vegetable Market</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <title>Student Profile Dashboard</title>
     <style>
-        /* Reset some default styles */
-body, h1, h2, p, ul {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* --- 1. RESET & VARIABLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-decoration: none;
+        }
 
-/* Body styling */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #88e99b;
-    color: #333;
-}
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --text-color: #ffffff;
+            --accent-color: #99f2c8;
+            --sidebar-width: 280px;
+        }
 
-/* Header styling */
-header {
-    background: #24b930;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: center; /* Center header content horizontally */
-    align-items: center; /* Center items vertically */
-    position: fixed; /* Fixed position to keep header at the top */
-    top: 0; /* Stick to the top of the viewport */
-    left: 0;
-    right: 0;
-    z-index: 1000; /* Ensure it's on top of other content */
-    transition: transform 0.3s ease; /* Smooth transition for hide/show */
-}
+        /* --- 2. BACKGROUND --- */
+        body {
+            background: linear-gradient(-45deg, #ee7752, #a95776, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            color: var(--text-color);
+            padding: 20px; 
+        }
 
-/* Menu icon styling */
-.menu-icon {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    position: absolute;
-    left: 10px;
-}
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-/* Menu icon bars */
-.bar {
-    height: 4px;
-    width: 25px;
-    background-color: white;
-    margin: 4px 0;
-    border-radius: 2px;
-}
+        /* --- 3. COMMON GLASS STYLE --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--glass-shadow);
+        }
 
-/* Menu styling */
-nav {
-    position: absolute;
-    top: 50px; /* Adjust this value if necessary */
-    left: -220px; /* Hide the menu off-screen to the left initially */
-    background: #052e08;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 200px; /* Adjust width as necessary */
-    transition: left 0.3s ease; /* Add transition for sliding effect */
-    z-index: 1000; /* Ensure it's on top of other content */
-}
+        /* --- 4. PROFILE SIDEBAR --- */
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeInDown 1s ease-out;
+        }
 
-/* Menu shown */
-nav.show {
-    left: 0px; /* Position the menu in view */
-}
+        @media (min-width: 900px) {
+            .profile-sidebar {
+                position: fixed;
+                top: 40px;
+                left: 40px;
+                width: var(--sidebar-width);
+                height: calc(100vh - 80px);
+                padding-top: 60px;
+                z-index: 100;
+            }
 
-/* Hidden menu */
-nav.hidden {
-    left: -220px; /* Keep menu off-screen to the left */
-}
+            .main-content {
+                margin-left: 360px;
+                margin-top: 20px;
+                max-width: 1000px;
+            }
+        }
 
-/* Initially visible menu icon */
-.menu-icon {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    position: absolute;
-    left: 10px;
-    top: 10px; /* Adjust as necessary */
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
-}
+        @media (max-width: 899px) {
+            .profile-sidebar {
+                width: 100%;
+                margin-bottom: 30px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
 
-/* Hidden menu icon */
-.menu-icon.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            margin-bottom: 20px;
+            background-color: #ddd;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+            background-size: cover;
+            animation: pulse 3s infinite;
+        }
 
+        .student-name { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+        .student-info { font-size: 1rem; opacity: 0.8; line-height: 1.6; }
 
-/* Menu icon bars */
-.bar {
-    height: 4px;
-    width: 25px;
-    background-color: white;
-    margin: 4px 0;
-    border-radius: 2px;
-}
+        /* --- SIDEBAR MENU STYLES --- */
+        .sidebar-menu {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
+        @media (max-width: 899px) {
+            .sidebar-menu { margin-top: 30px; }
+        }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+        .menu-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            /* Ensure button/link appearance is consistent */
+            border: none;
+            width: 100%;
+            font-size: 1rem;
+        }
 
-nav ul li {
-    padding: 10px;
-}
+        .menu-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--accent-color);
+            transform: translateX(5px);
+        }
 
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-}
+        .menu-link span {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
 
-nav ul li a:hover {
-    background: #28a745;
-}
+        /* --- 5. MAIN CONTENT HEADER --- */
+        header { 
+            margin-bottom: 40px; 
+            animation: fadeInDown 1s ease-out 0.2s backwards;
+        }
+        
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { opacity: 0.8; font-size: 1.1rem; }
 
+        .wave-emoji {
+            display: inline-block;
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
+        }
 
-/* Ensure header is initially visible */
-header.header-visible {
-    transform: translateY(0); /* Header is visible */
-}
+        /* --- 6. CARD GRID --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+        }
 
-/* Hide header when scrolling down */
-header:not(.header-visible) {
-    transform: translateY(-100%); /* Move header out of view */
-}
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 200px;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
 
-/* Heading styling */
-header h1 {
-    margin: 0;
-    font-size: 1.5em; /* Adjust size as needed */
-    text-align: center;
-    flex: 1; /* Allow h1 to take up remaining space */
-}
+        .card:nth-child(1) { animation-delay: 0.4s; }
+        .card:nth-child(2) { animation-delay: 0.5s; }
+        .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:nth-child(4) { animation-delay: 0.7s; }
+        .card:nth-child(5) { animation-delay: 0.8s; }
+        .card:nth-child(6) { animation-delay: 0.9s; }
 
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.3);
+        }
 
-/* Main content styling */
-main {
-    /* padding: 15px; */
-    margin-top: 60px; /* Add space for fixed header */
-}
+        .icon-box { 
+            font-size: 3rem; 
+            margin-bottom: 15px; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); 
+        }
+        
+        .card h3 { font-size: 1.5rem; margin-bottom: 8px; font-weight: 600; }
+        .card p { font-size: 1rem; opacity: 0.8; }
 
-.product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-}
+        .arrow-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0;
+            transform: translateX(-15px);
+            transition: all 0.3s ease;
+            color: white;
+        }
 
-.product {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    overflow: hidden;
-    text-align: center;
-    padding: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+        .card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-.product:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+        /* --- 7. ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.product img {
-    width: 100%;
-    height: auto;
-}
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.product h2 {
-    margin: 10px 0;
-}
-
-.product p {
-    margin: 5px 0;
-}
-
-.add-to-cart {
-    background: #28a745;
-    border:#333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.add-to-cart:hover {
-    background: #c07a19;
-    
-}
-
-.add-to-cart:focus {
-    outline: 2px solid #333; /* Focus outline for accessibility */
-    outline-offset: 4px;
-}
-
-/* Modal styling */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed position to stay in place */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensure it's on top of other content */
-}
-
-/* Modal content styling */
-.modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 80%; /* Responsive width */
-    max-width: 500px; /* Max width */
-    position: relative; /* Position for the close button */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for better visibility */
-}
-
-/* Close button styling */
-.close-btn {
-    font-size: 24px;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #333;
-}
-
-.close-btn:hover {
-    color: #dc3545; /* Red color on hover for emphasis */
-}
-
-/* Notification message styling */
-#notification-message {
-    font-size: 18px;
-    margin: 20px 0;
-}
-
-
-
+        @keyframes wave {
+            0% { transform: rotate( 0.0deg); }
+            10% { transform: rotate(14.0deg); }
+            20% { transform: rotate(-8.0deg); }
+            30% { transform: rotate(14.0deg); }
+            40% { transform: rotate(-4.0deg); }
+            50% { transform: rotate(10.0deg); }
+            60% { transform: rotate( 0.0deg); }
+            100% { transform: rotate( 0.0deg); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(153, 242, 200, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(153, 242, 200, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(153, 242, 200, 0); }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="menu-icon" id="menu-icon">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+
+    <aside class="glass-panel profile-sidebar">
+        <div class="profile-img"></div>
+        <h2 class="student-name">Manoj</h2>
+        <div class="student-info">
+            <p>MCA - Semester I</p>
+            <p>Roll No: 62</p>
         </div>
-        <h1>Freshpic Green Market</h1>
-        <nav id="menu" class="hidden">
-            <ul>
-                <li><a href="#">Menu 1</a></li>
-                <li><a href="#">Menu 2</a></li>
-                <!-- Add more menu items as needed -->
-            </ul>
-        </nav>
-        
-        <div>
-            <a href="cart.html" style="text-decoration: none;">
-                <i class="fas fa-shopping-basket"></i> Cart
+
+        <nav class="sidebar-menu">
+            <a href="mainFiles/certificate.html" class="menu-link protected-link">
+                <span>🏅</span> Certifications
             </a>
+            
+            <a href="cv.pdf" target="_blank" class="menu-link protected-link">
+                <span>📄</span> Download CV
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>Welcome to my page <span class="wave-emoji">👋</span></h1>
+            <p>Your academic hub for notes and projects</p>
+        </header>
+
+        <div class="card-grid">
+            
+            <div class="card notes" onclick="navigateTo('notes')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">📚</div>
+                <h3>Notes</h3>
+                <p>Download PDFs</p>
+            </div>
+
+            <div class="card assignments" onclick="navigateTo('assignments')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">📋</div>
+                <h3>Lab Assignments</h3>
+            </div>
+
+            <div class="card projects" onclick="navigateTo('projects')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">🚀</div>
+                <h3>Projects</h3>
+                <p>Research & Code</p>
+            </div>
+
+            <div class="card aptitude" onclick="navigateTo('aptitude')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">🧠</div>
+                <h3>Aptitude Material</h3>
+                <p>Exam Prep</p>
+            </div>
+
+            <div class="card announcements" onclick="navigateTo('announcements')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">📢</div>
+                <h3>Announcements</h3>
+                <p>Important News</p>
+            </div>
+
+            <div class="card other-notes" onclick="navigateTo('other-notes')">
+                <div class="arrow-icon">➔</div>
+                <div class="icon-box">📂</div>
+                <h3>Other Notes</h3>
+                <p>Misc. Resources</p>
+            </div>
+
         </div>
-    </header>
-    
-    
-    <main>
-        <section class="product-list">  
-            <article class="product">
-                <img src="tomato.jpg" alt="Tomato">
-                <h2>Tomato</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="tomato" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="carrot.jpg" alt="Carrot">
-                <h2>Carrot</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="carrot" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="beans.jpg" alt="Beans">
-                <h2>Beans</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="beans" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="bitterGourd.jpg" alt="Bitter Gourd">
-                <h2>Bitter Gourd</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="bitterGourd" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="bottleGourd.jpg" alt="Bottle Gourd">
-                <h2>Bottle Gourd</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="bottleGourd" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="brinjal.jpg" alt="Brinjal">
-                <h2>Brinjal</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="brinjal" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="cabbage.jpg" alt="Cabbage">
-                <h2>Cabbage</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="cabbage" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="cauliflower.jpg" alt="Cauliflower">
-                <h2>Cauliflower</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="cauliflower" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="clusterBeans.jpg" alt="Cluster Beans">
-                <h2>Cluster Beans</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="clusterBeans" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="cowPeas.jpg" alt="Cowpeas">
-                <h2>Cowpeas</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="cowPeas" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="drumstics.jpg" alt="Drumsticks">
-                <h2>Drumsticks</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="drumsticks" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="onion.jpg" alt="Onion">
-                <h2>Onion</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="onion" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="potato.jpg" alt="Potato">
-                <h2>Potato</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="potato" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="ridgeGourd.jpg" alt="Ridge Gourd">
-                <h2>Ridge Gourd</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="ridgeGourd" data-price="30">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="sweetPatato.jpg" alt="sweetPatato">
-                <h2>Sweet Potato</h2>
-                <p>Price: Rs.60 per kg</p>
-                <button class="add-to-cart" data-product="sweetPotato" data-price="60">Add to Cart</button>
-            </article>
-            <article class="product">
-                <img src="yam.jpg" alt="Yam">
-                <h2>Yam</h2>
-                <p>Price: Rs.30 per kg</p>
-                <button class="add-to-cart" data-product="yam" data-price="30">Add to Cart</button>
-            </article>
-        </section>
     </main>
- 
-
-<!-- Modal HTML -->
-<div id="notification-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2 id="notification-message">Product added to cart.</h2>
-    </div>
-</div>
-
 
     <script>
-        // Get the cart from localStorage
-function getCart() {
-    try {
-        const cart = localStorage.getItem('cart');
-        return cart ? JSON.parse(cart) : [];
-    } catch (error) {
-        console.error('Failed to retrieve cart from localStorage:', error);
-        return [];
-    }
-}
+        // 1. Password Protection Logic
+        document.querySelectorAll('.protected-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Ask for password BEFORE preventing the default action
+                const password = prompt("Please enter the password:");
 
-// Save the cart to localStorage
-function saveCart(cart) {
-    try {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    } catch (error) {
-        console.error('Failed to save cart to localStorage:', error);
-    }
-}
-
-// Handle adding product to cart
-function handleAddToCart(productName, price) {
-    const cart = getCart();
-    const existingProduct = cart.find(item => item.name === productName);
-
-    if (existingProduct) {
-        existingProduct.quantity += 1; // Update quantity
-    } else {
-        cart.push({ name: productName, price: price, quantity: 1 }); // Add new product
-    }
-
-    saveCart(cart); // Save updated cart
-}
-
-// Event listeners for 'add-to-cart' buttons
-document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', function() {
-        const productName = this.getAttribute('data-product') || 'Product';
-        const price = parseFloat(this.getAttribute('data-price')) || 0;
-        
-        handleAddToCart(productName, price);
-        alert(`"${productName}" added to cart.`); // Display alert message
-    });
-});
-
-// Get the header element
-const header = document.querySelector('header');
-
-// Variables to track scroll position
-let lastScrollTop = 0;
-const delta = 5; // Minimum scroll amount to trigger show/hide
-const headerHeight = header.offsetHeight;
-
-// Handle scroll events
-function handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollTop > headerHeight) {
-        if (scrollTop > lastScrollTop && (scrollTop - lastScrollTop) > delta) {
-            header.classList.remove('header-visible');
-        } else if (scrollTop < lastScrollTop && (lastScrollTop - scrollTop) > delta) {
-            header.classList.add('header-visible');
-        }
-    }
-
-    lastScrollTop = Math.max(scrollTop, 0);
-}
-
-// Initial setup: Ensure the header is visible on load
-function initHeader() {
-    header.classList.add('header-visible');
-}
-
-// Run initial setup
-initHeader();
-
-// Throttle scroll events for better performance
-let scrollTimeout;
-function throttleScroll() {
-    if (!scrollTimeout) {
-        scrollTimeout = requestAnimationFrame(() => {
-            handleScroll();
-            scrollTimeout = null;
+                // Check password
+                if (password === "ManojMS") {
+                    // Success! Do nothing. 
+                    // The browser will automatically follow the href and target="_blank"
+                } else {
+                    // Failure: Stop the link from opening
+                    e.preventDefault();
+                    alert("Incorrect password. Access denied.");
+                }
+            });
         });
-    }
-}
 
-// Event listener for scroll events
-window.addEventListener('scroll', throttleScroll);
+        // 2. Card Navigation Logic (Updated)
+        function navigateTo(section) {
+            // Map the section ID to the specific file path
+            // Ensure these files exist in your 'mainFiles' folder
+            const pages = {
+                'notes': 'mainFiles/notes.html',
+                'assignments': 'mainFiles/lab.html',
+                'projects': 'mainFiles/projects.html',
+                'aptitude': 'mainFiles/aptitude.html',
+                'announcements': 'mainFiles/announcement.html',
+                'other-notes': 'mainFiles/otherNotes.html'
+            };
 
-// Get menu elements
-const menuIcon = document.getElementById('menu-icon');
-const menu = document.getElementById('menu');
+            const url = pages[section];
 
-// Function to toggle the menu visibility
-function toggleMenu() {
-    if (menu.classList.contains('hidden') || menu.classList.contains('show')) {
-        menu.classList.toggle('hidden'); // Toggle hidden class
-        menu.classList.toggle('show');   // Toggle show class
-    }
-}
-
-// Add event listener to menu icon
-menuIcon.addEventListener('click', toggleMenu);
-
-// Optional: Hide the menu when clicking outside of it
-window.addEventListener('click', function(event) {
-    if (!menuIcon.contains(event.target) && !menu.contains(event.target)) {
-        menu.classList.add('hidden');
-        menu.classList.remove('show');
-    }
-});
+            if (url) {
+                window.location.href = url;
+            } else {
+                console.error("No URL defined for section: " + section);
+                alert("This section is under construction.");
+            }
+        }
     </script>
-
-
-</body>
+   
+</body>  
 </html>
