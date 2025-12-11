@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCA Subject Portal</title>
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+           background: linear-gradient(-45deg, #ee7752, #a95776, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+
+        /* --- SEARCH BAR --- */
+        .search-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        #searchBox {
+            padding: 15px 25px;
+            width: 100%;
+            max-width: 500px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        #searchBox::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #searchBox:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+        }
+
+        /* --- GRID LAYOUT --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- GLASSMORPHISM CARD --- */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 30px;
+            background: white;
+            color: #203a43;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+
+        .card:hover .btn {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Study Dashboard</h1>
+            <p class="subtitle">Access your course materials below</p>
+        </header>
+
+        <div class="search-wrapper">
+            <input type="text" id="searchBox" placeholder="Search subjects..." onkeyup="filterSubjects()">
+        </div>
+
+        <div class="grid" id="cardGrid">
+            
+            <!-- <div class="card" onclick="openPdf('CPP_GOOGLE.pdf')">
+                <div class="icon">🧱</div> <h3>OOPS</h3>
+                <p>Classes, Objects, Inheritance, Polymorphism, and C++ Concepts.</p>
+                <span class="btn">Open Notes</span>
+            </div>
+
+            <div class="card" onclick="openPdf('DSA_GOOGLE.pdf')">
+                <div class="icon">🌳</div> <h3>DSA</h3>
+                <p>Stacks, Queues, Linked Lists, Trees, Graphs, and Algorithms.</p>
+                <span class="btn">Open Notes</span>
+            </div>
+
+            <div class="card" onclick="openPdf('AI_GOOGLE.pdf')">
+                <div class="icon">🤖</div> <h3>Artificial Intelligence</h3>
+                <p>Intelligent Agents, Search Strategies, Neural Networks, and Logic.</p>
+                <span class="btn">Open Notes</span>
+            </div>
+
+            <div class="card" onclick="openPdf('MathUnitTest.pdf')">
+                <div class="icon">🎲</div> <h3>Discrete Math</h3>
+                <p>Set Theory, Graph Theory, Logic, and Combinatorics.</p>
+                <span class="btn">Open Notes</span>
+            </div>
+
+            <div class="card" onclick="openPdf('RM_GOOGLE.pdf')">
+                <div class="icon">🔎</div> <h3>Research Methodology</h3>
+                <p>Data Collection, Analysis, Thesis Writing, and Ethics.</p>
+                <span class="btn">Open Notes</span>
+            </div> -->
+
+        </div>
+    </div>
+
+    <script>
+        function openPdf(filename) {
+            window.open(filename, '_blank');
+        }
+
+        function filterSubjects() {
+            let input = document.getElementById('searchBox');
+            let filter = input.value.toUpperCase();
+            let grid = document.getElementById('cardGrid');
+            let cards = grid.getElementsByClassName('card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let h3 = cards[i].getElementsByTagName("h3")[0];
+                let txtValue = h3.textContent || h3.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
