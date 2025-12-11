@@ -1,0 +1,149 @@
+/* General styles for the cart page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    position: relative;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.back-arrow {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.5;
+}
+
+.back-arrow:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 20px;
+}
+
+.cart {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.cart-item h2 {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.cart-item p {
+    margin: 5px 0;
+}
+
+.remove-btn {
+    background-color: #e74c3c; /* Red */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.remove-btn:hover {
+    background-color: #c0392b;
+}
+
+.cart-summary {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.cart-summary h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    text-align: center;
+    background-color: #4eb317;
+    color: #ddd;
+    padding: 10px;
+}
+
+footer {
+    background-color: #c21919; /* Red */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+.order-link {
+    display: block;
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+.order {
+    font-size: 1.2em;
+}
+
+.order-link:hover .order {
+    text-decoration: underline;
+}
+
+#empty-cart-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+}

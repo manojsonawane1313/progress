@@ -1,0 +1,304 @@
+/* Reset some default styles */
+body, h1, h2, p, ul {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #88e99b;
+    color: #333;
+}
+
+/* Header styling */
+header {
+    background: #24b930;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center; /* Center header content horizontally */
+    align-items: center; /* Center items vertically */
+    position: fixed; /* Fixed position to keep header at the top */
+    top: 0; /* Stick to the top of the viewport */
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensure it's on top of other content */
+    transition: transform 0.3s ease; /* Smooth transition for hide/show */
+}
+
+/* Menu icon styling */
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+}
+
+/* Menu icon bars */
+.bar {
+    height: 4px;
+    width: 25px;
+    background-color: white;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+/* Menu styling */
+nav {
+    position: absolute;
+    top: 50px; /* Adjust this value if necessary */
+    left: -220px; /* Hide the menu off-screen to the left initially */
+    background: #052e08;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 200px; /* Adjust width as necessary */
+    transition: left 0.3s ease; /* Add transition for sliding effect */
+    z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Menu shown */
+nav.show {
+    left: 0px; /* Position the menu in view */
+}
+
+/* Hidden menu */
+nav.hidden {
+    left: -220px; /* Keep menu off-screen to the left */
+}
+
+/* Initially visible menu icon */
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    top: 10px; /* Adjust as necessary */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+}
+
+/* Hidden menu icon */
+.menu-icon.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+/* Menu icon bars */
+.bar {
+    height: 4px;
+    width: 25px;
+    background-color: white;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    padding: 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+nav ul li a:hover {
+    background: #28a745;
+}
+
+
+/* Ensure header is initially visible */
+header.header-visible {
+    transform: translateY(0); /* Header is visible */
+}
+
+/* Hide header when scrolling down */
+header:not(.header-visible) {
+    transform: translateY(-100%); /* Move header out of view */
+}
+
+/* Heading styling */
+header h1 {
+    margin: 0;
+    font-size: 1.5em; /* Adjust size as needed */
+    text-align: center;
+    flex: 1; /* Allow h1 to take up remaining space */
+}
+
+
+/* Main content styling */
+main {
+    /* padding: 15px; */
+    margin-top: 60px; /* Add space for fixed header */
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.product {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+}
+
+.product h2 {
+    margin: 10px 0;
+}
+
+.product p {
+    margin: 5px 0;
+}
+
+.add-to-cart {
+    background: #28a745;
+    border:#333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background: #c07a19;
+    
+}
+
+.add-to-cart:focus {
+    outline: 2px solid #333; /* Focus outline for accessibility */
+    outline-offset: 4px;
+}
+
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to stay in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top of other content */
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 80%; /* Responsive width */
+    max-width: 500px; /* Max width */
+    position: relative; /* Position for the close button */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Subtle shadow for better visibility */
+}
+
+/* Close button styling */
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+}
+
+.close-btn:hover {
+    color: #dc3545; /* Red color on hover for emphasis */
+}
+
+/* Notification message styling */
+#notification-message {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+/* Button styling */
+#confirm-cancel, #confirm-ok {
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#confirm-cancel {
+    background: #dc3545;
+}
+
+#confirm-ok {
+    background: #28a745;
+}
+
+#confirm-cancel:hover, #confirm-ok:hover {
+    opacity: 0.9;
+    transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+#confirm-cancel:focus, #confirm-ok:focus {
+    outline: 2px solid #333; /* Focus outline for accessibility */
+    outline-offset: 4px;
+}
+
+/* Footer styling */
+footer {
+    background: #d10f23;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+a {
+    text-decoration: none; /* Remove underline from link */
+    color: inherit; /* Inherit color from parent (footer) */
+}
+
+@media (max-width: 600px) {
+    .product-list {
+        grid-template-columns: repeat(2, 1fr); /* Two items per row */
+    }
+}
+
+/* For very small screens (e.g., extra-small mobile devices) */
+@media (max-width: 400px) {
+    .product-list {
+        grid-template-columns: repeat(1, 1fr); /* One item per row */
+    }
+}

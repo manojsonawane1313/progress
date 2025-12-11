@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Vegetable Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Reset some default styles */
+body, h1, h2, p, ul {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #88e99b;
+    color: #333;
+}
+
+/* Header styling */
+header {
+    background: #24b930;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center; /* Center header content horizontally */
+    align-items: center; /* Center items vertically */
+    position: fixed; /* Fixed position to keep header at the top */
+    top: 0; /* Stick to the top of the viewport */
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensure it's on top of other content */
+    transition: transform 0.3s ease; /* Smooth transition for hide/show */
+}
+
+/* Menu icon styling */
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+}
+
+/* Menu icon bars */
+.bar {
+    height: 4px;
+    width: 25px;
+    background-color: white;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+/* Menu styling */
+nav {
+    position: absolute;
+    top: 50px; /* Adjust this value if necessary */
+    left: -220px; /* Hide the menu off-screen to the left initially */
+    background: #052e08;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 200px; /* Adjust width as necessary */
+    transition: left 0.3s ease; /* Add transition for sliding effect */
+    z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Menu shown */
+nav.show {
+    left: 0px; /* Position the menu in view */
+}
+
+/* Hidden menu */
+nav.hidden {
+    left: -220px; /* Keep menu off-screen to the left */
+}
+
+/* Initially visible menu icon */
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    top: 10px; /* Adjust as necessary */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+}
+
+/* Hidden menu icon */
+.menu-icon.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+/* Menu icon bars */
+.bar {
+    height: 4px;
+    width: 25px;
+    background-color: white;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    padding: 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+nav ul li a:hover {
+    background: #28a745;
+}
+
+
+/* Ensure header is initially visible */
+header.header-visible {
+    transform: translateY(0); /* Header is visible */
+}
+
+/* Hide header when scrolling down */
+header:not(.header-visible) {
+    transform: translateY(-100%); /* Move header out of view */
+}
+
+/* Heading styling */
+header h1 {
+    margin: 0;
+    font-size: 1.5em; /* Adjust size as needed */
+    text-align: center;
+    flex: 1; /* Allow h1 to take up remaining space */
+}
+
+
+/* Main content styling */
+main {
+    /* padding: 15px; */
+    margin-top: 60px; /* Add space for fixed header */
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.product {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+}
+
+.product h2 {
+    margin: 10px 0;
+}
+
+.product p {
+    margin: 5px 0;
+}
+
+.add-to-cart {
+    background: #28a745;
+    border:#333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background: #c07a19;
+    
+}
+
+.add-to-cart:focus {
+    outline: 2px solid #333; /* Focus outline for accessibility */
+    outline-offset: 4px;
+}
+
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to stay in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Modal content styling */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 80%; /* Responsive width */
+    max-width: 500px; /* Max width */
+    position: relative; /* Position for the close button */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for better visibility */
+}
+
+/* Close button styling */
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+}
+
+.close-btn:hover {
+    color: #dc3545; /* Red color on hover for emphasis */
+}
+
+/* Notification message styling */
+#notification-message {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <h1>Freshpic Green Market</h1>
+        <nav id="menu" class="hidden">
+            <ul>
+                <li><a href="#">Menu 1</a></li>
+                <li><a href="#">Menu 2</a></li>
+                <!-- Add more menu items as needed -->
+            </ul>
+        </nav>
+        
+        <div>
+            <a href="cart.html" style="text-decoration: none;">
+                <i class="fas fa-shopping-basket"></i> Cart
+            </a>
+        </div>
+    </header>
+    
+    
+    <main>
+        <section class="product-list">  
+            <article class="product">
+                <img src="tomato.jpg" alt="Tomato">
+                <h2>Tomato</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="tomato" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="carrot.jpg" alt="Carrot">
+                <h2>Carrot</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="carrot" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="beans.jpg" alt="Beans">
+                <h2>Beans</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="beans" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="bitterGourd.jpg" alt="Bitter Gourd">
+                <h2>Bitter Gourd</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="bitterGourd" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="bottleGourd.jpg" alt="Bottle Gourd">
+                <h2>Bottle Gourd</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="bottleGourd" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="brinjal.jpg" alt="Brinjal">
+                <h2>Brinjal</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="brinjal" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="cabbage.jpg" alt="Cabbage">
+                <h2>Cabbage</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="cabbage" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="cauliflower.jpg" alt="Cauliflower">
+                <h2>Cauliflower</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="cauliflower" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="clusterBeans.jpg" alt="Cluster Beans">
+                <h2>Cluster Beans</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="clusterBeans" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="cowPeas.jpg" alt="Cowpeas">
+                <h2>Cowpeas</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="cowPeas" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="drumstics.jpg" alt="Drumsticks">
+                <h2>Drumsticks</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="drumsticks" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="onion.jpg" alt="Onion">
+                <h2>Onion</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="onion" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="potato.jpg" alt="Potato">
+                <h2>Potato</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="potato" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="ridgeGourd.jpg" alt="Ridge Gourd">
+                <h2>Ridge Gourd</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="ridgeGourd" data-price="30">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="sweetPatato.jpg" alt="sweetPatato">
+                <h2>Sweet Potato</h2>
+                <p>Price: Rs.60 per kg</p>
+                <button class="add-to-cart" data-product="sweetPotato" data-price="60">Add to Cart</button>
+            </article>
+            <article class="product">
+                <img src="yam.jpg" alt="Yam">
+                <h2>Yam</h2>
+                <p>Price: Rs.30 per kg</p>
+                <button class="add-to-cart" data-product="yam" data-price="30">Add to Cart</button>
+            </article>
+        </section>
+    </main>
+ 
+
+<!-- Modal HTML -->
+<div id="notification-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2 id="notification-message">Product added to cart.</h2>
+    </div>
+</div>
+
+
+    <script>
+        // Get the cart from localStorage
+function getCart() {
+    try {
+        const cart = localStorage.getItem('cart');
+        return cart ? JSON.parse(cart) : [];
+    } catch (error) {
+        console.error('Failed to retrieve cart from localStorage:', error);
+        return [];
+    }
+}
+
+// Save the cart to localStorage
+function saveCart(cart) {
+    try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    } catch (error) {
+        console.error('Failed to save cart to localStorage:', error);
+    }
+}
+
+// Handle adding product to cart
+function handleAddToCart(productName, price) {
+    const cart = getCart();
+    const existingProduct = cart.find(item => item.name === productName);
+
+    if (existingProduct) {
+        existingProduct.quantity += 1; // Update quantity
+    } else {
+        cart.push({ name: productName, price: price, quantity: 1 }); // Add new product
+    }
+
+    saveCart(cart); // Save updated cart
+}
+
+// Event listeners for 'add-to-cart' buttons
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+        const productName = this.getAttribute('data-product') || 'Product';
+        const price = parseFloat(this.getAttribute('data-price')) || 0;
+        
+        handleAddToCart(productName, price);
+        alert(`"${productName}" added to cart.`); // Display alert message
+    });
+});
+
+// Get the header element
+const header = document.querySelector('header');
+
+// Variables to track scroll position
+let lastScrollTop = 0;
+const delta = 5; // Minimum scroll amount to trigger show/hide
+const headerHeight = header.offsetHeight;
+
+// Handle scroll events
+function handleScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > headerHeight) {
+        if (scrollTop > lastScrollTop && (scrollTop - lastScrollTop) > delta) {
+            header.classList.remove('header-visible');
+        } else if (scrollTop < lastScrollTop && (lastScrollTop - scrollTop) > delta) {
+            header.classList.add('header-visible');
+        }
+    }
+
+    lastScrollTop = Math.max(scrollTop, 0);
+}
+
+// Initial setup: Ensure the header is visible on load
+function initHeader() {
+    header.classList.add('header-visible');
+}
+
+// Run initial setup
+initHeader();
+
+// Throttle scroll events for better performance
+let scrollTimeout;
+function throttleScroll() {
+    if (!scrollTimeout) {
+        scrollTimeout = requestAnimationFrame(() => {
+            handleScroll();
+            scrollTimeout = null;
+        });
+    }
+}
+
+// Event listener for scroll events
+window.addEventListener('scroll', throttleScroll);
+
+// Get menu elements
+const menuIcon = document.getElementById('menu-icon');
+const menu = document.getElementById('menu');
+
+// Function to toggle the menu visibility
+function toggleMenu() {
+    if (menu.classList.contains('hidden') || menu.classList.contains('show')) {
+        menu.classList.toggle('hidden'); // Toggle hidden class
+        menu.classList.toggle('show');   // Toggle show class
+    }
+}
+
+// Add event listener to menu icon
+menuIcon.addEventListener('click', toggleMenu);
+
+// Optional: Hide the menu when clicking outside of it
+window.addEventListener('click', function(event) {
+    if (!menuIcon.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+        menu.classList.remove('show');
+    }
+});
+    </script>
+
+
+</body>
+</html>
