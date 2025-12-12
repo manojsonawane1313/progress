@@ -3,69 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
-
+    <title>Subject Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* --- RESET & BASE STYLES --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Segoe UI", Tahoma, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            height: 100vh;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(-45deg, #ee7752, #a95776, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
             color: white;
-            text-align: center;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- CONTAINER --- */
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 800px;
         }
 
-        h1 {
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        header h1 {
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+            color: white;
         }
 
-        p {
+        header p {
             font-size: 1.1rem;
-            margin-bottom: 20px;
             opacity: 0.9;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        .loader {
-            border: 6px solid rgba(255,255,255,0.3);
-            border-top: 6px solid white;
-            border-radius: 50%;
+        /* --- GRID LAYOUT --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- GLASSMORPHISM CARD --- */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out backwards;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- ICON BOX (Emoji Circle) --- */
+        .icon-box {
+            font-size: 1.8rem;
+            margin-right: 20px;
+            background: rgba(255, 255, 255, 0.2);
             width: 55px;
             height: 55px;
-            margin: 20px auto;
-            animation: spin 1.2s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* --- TEXT CONTENT --- */
+        .card-content h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
         }
+
+        .card-content p {
+            margin: 4px 0 0 0;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* --- ARROW ICON --- */
+        .arrow-icon {
+            position: absolute;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover .arrow-icon {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Staggered animation delays for up to 6 cards */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🚧 Work in Progress</h1>
-        <p>We are currently working on this page. Please check back soon!</p>
-        <div class="loader"></div>
+        <header>
+            <h1>Subject Notes</h1>
+            <p>Click a subject to open the PDF</p>
+        </header>
+
+        <div class="card-grid">
+            
+            <div class="card" onclick="openPdf('cpp')">
+                <div class="icon-box">💻</div>
+                <div class="card-content">
+                    <h3>C++ Lab</h3>
+                    <p>Lab Manual & Codes</p>
+                </div>
+                <div class="arrow-icon">➔</div>
+            </div>
+
+            </div>
     </div>
 
+    <script>
+        // CONFIGURATION: Replace these paths with your actual PDF locations
+        const pdfLinks = {
+            'cpp':      'lab/cppLab.pdf',
+            'c':        'otherNotes/CppSynopsis.pdf',
+            'sql':      'notes/sql_queries.pdf',
+            'java':     'notes/java_complete.pdf',
+            'python':   'notes/python_handbook.pdf',
+            'angular':  'notes/angular_tutorial.pdf'
+        };
+
+        function openPdf(subject) {
+            const url = pdfLinks[subject];
+            
+            if (url) {
+                // Opens the PDF in a new browser tab
+                window.open(url, '_blank'); 
+            } else {
+                alert('PDF file path not configured!');
+            }
+        }
+    </script>
 </body>
 </html>
