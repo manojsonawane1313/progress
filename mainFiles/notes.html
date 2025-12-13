@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MCA Subject Portal</title>
     <style>
-        /* --- RESET & BASE STYLES --- */
+        /* --- 1. RESET & BASE STYLES --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-           background: linear-gradient(-45deg, #ee7752, #a95776, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #ee7752, #a95776, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding-bottom: 40px; /* Space for scrolling */
         }
 
         @keyframes gradientBG {
@@ -30,46 +29,61 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- CONTAINER --- */
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin-top: 50px;
-            padding-bottom: 50px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-        }
-
-        p.subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            letter-spacing: 1px;
-        }
-
-        /* --- SEARCH BAR --- */
-        .search-wrapper {
+        /* --- 2. HEADER & NAVIGATION --- */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
             display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .back-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
+
+        .header-title h1 { font-size: 1.2rem; font-weight: 700; margin: 0; }
+        .header-title p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+
+        /* --- 3. CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- 4. SEARCH BAR --- */
+        .search-wrapper {
+            margin-bottom: 25px;
+            position: sticky;
+            top: 80px; /* Below header */
+            z-index: 90;
         }
 
         #searchBox {
-            padding: 15px 25px;
+            padding: 15px 50px 15px 20px; /* Padding for icon */
             width: 100%;
-            max-width: 500px;
             border: none;
-            border-radius: 50px;
+            border-radius: 16px;
             font-size: 1rem;
             outline: none;
             background: rgba(255, 255, 255, 0.15);
@@ -77,150 +91,196 @@
             -webkit-backdrop-filter: blur(12px);
             color: white;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
 
-        #searchBox::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
+        #searchBox::placeholder { color: rgba(255, 255, 255, 0.7); }
+        
         #searchBox:focus {
             background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
-        /* --- GRID LAYOUT --- */
+        /* --- 5. RESPONSIVE GRID/LIST LAYOUT --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 20px;
+            /* Desktop default: Grid */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
         }
 
-        /* --- GLASSMORPHISM CARD --- */
+        /* --- 6. CARD STYLES --- */
         .card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 30px;
-            text-align: center;
+            padding: 25px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            
+            /* Desktop Flex Column */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
+        
+        /* Desktop Hover */
+        @media(hover: hover) {
+            .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         }
 
         .icon {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 15px;
-            display: inline-block;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+            transition: 0.3s;
         }
 
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            font-weight: 600;
+        .card-content { flex: 1; }
+
+        .card h3 { font-size: 1.3rem; margin-bottom: 8px; font-weight: 600; }
+        .card p { font-size: 0.9rem; opacity: 0.8; line-height: 1.4; margin-bottom: 15px; }
+
+        .arrow-indicator {
+            display: none; /* Hidden on desktop grid */
+            font-size: 1.2rem;
+            opacity: 0.6;
         }
 
-        .card p {
-            font-size: 0.95rem;
-            opacity: 0.8;
-            margin-bottom: 25px;
-            line-height: 1.4;
+        /* --- 7. MOBILE OPTIMIZATION (THE "APP" FEEL) --- */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            
+            .grid {
+                /* Mobile: Switch to Single Column (List View) */
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .card {
+                /* Switch to Row Layout (Icon Left, Text Right) */
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+                padding: 15px 20px;
+                min-height: 80px;
+            }
+
+            .icon {
+                font-size: 2.2rem;
+                margin-bottom: 0;
+                margin-right: 20px;
+                min-width: 50px;
+                text-align: center;
+            }
+
+            .card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+            .card p { 
+                font-size: 0.8rem; 
+                margin-bottom: 0; 
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* Limit text lines */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            /* Hide the "Open Notes" button text on mobile, use arrow instead */
+            .btn-text { display: none; }
+            
+            .arrow-indicator {
+                display: block;
+                margin-left: 10px;
+                color: white;
+            }
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 30px;
-            background: white;
-            color: #203a43;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: transform 0.2s;
-        }
-
-        .card:hover .btn {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* --- 8. ANIMATIONS --- */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .card {
-            animation: fadeInUp 0.8s ease-out backwards;
-        }
-        
+        .card { animation: fadeInUp 0.6s ease-out backwards; }
         .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
-        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(2) { animation-delay: 0.15s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.25s; }
+        .card:nth-child(5) { animation-delay: 0.3s; }
 
     </style>
 </head>
 <body>
 
+    <header class="app-header">
+        <div class="back-btn" onclick="goBack()">
+            ➜
+            <style>.back-btn { transform: rotate(180deg); }</style>
+        </div>
+        <div class="header-title">
+            <h1>Subject Portal</h1>
+            <p>Semester I • Notes</p>
+        </div>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Study Dashboard</h1>
-            <p class="subtitle">Access your course materials below</p>
-        </header>
 
         <div class="search-wrapper">
-            <input type="text" id="searchBox" placeholder="Search subjects..." onkeyup="filterSubjects()">
+            <input type="text" id="searchBox" placeholder="🔍  Search subjects..." onkeyup="filterSubjects()">
         </div>
 
         <div class="grid" id="cardGrid">
             
             <div class="card" onclick="openPdf('sem1/CPP_GOOGLE.pdf')">
-                <div class="icon">🧱</div> <h3>OOPS</h3>
-                <p>Classes, Objects, Inheritance, Polymorphism, and C++ Concepts.</p>
-                <span class="btn">Open Notes</span>
+                <div class="icon">🧱</div> 
+                <div class="card-content">
+                    <h3>OOPS C++</h3>
+                    <p>Classes, Objects, Inheritance, Polymorphism.</p>
+                </div>
+                <div class="arrow-indicator">❯</div>
             </div>
 
             <div class="card" onclick="openPdf('sem1/DSA_GOOGLE.pdf')">
-                <div class="icon">🌳</div> <h3>DSA</h3>
-                <p>Stacks, Queues, Linked Lists, Trees, Graphs, and Algorithms.</p>
-                <span class="btn">Open Notes</span>
+                <div class="icon">🌳</div> 
+                <div class="card-content">
+                    <h3>DSA</h3>
+                    <p>Stacks, Queues, Linked Lists, Trees, Graphs.</p>
+                </div>
+                <div class="arrow-indicator">❯</div>
             </div>
 
             <div class="card" onclick="openPdf('sem1/AI_GOOGLE.pdf')">
-                <div class="icon">🤖</div> <h3>Artificial Intelligence</h3>
-                <p>Intelligent Agents, Search Strategies, Neural Networks, and Logic.</p>
-                <span class="btn">Open Notes</span>
+                <div class="icon">🤖</div> 
+                <div class="card-content">
+                    <h3>Artificial Intelligence</h3>
+                    <p>Agents, Search Strategies, Neural Networks.</p>
+                </div>
+                <div class="arrow-indicator">❯</div>
             </div>
 
             <div class="card" onclick="openPdf('sem1/MathUnitTest.pdf')">
-                <div class="icon">🎲</div> <h3>Discrete Math</h3>
-                <p>Set Theory, Graph Theory, Logic, and Combinatorics.</p>
-                <span class="btn">Open Notes</span>
+                <div class="icon">🎲</div> 
+                <div class="card-content">
+                    <h3>Discrete Math</h3>
+                    <p>Set Theory, Graph Theory, Logic, Combinatorics.</p>
+                </div>
+                <div class="arrow-indicator">❯</div>
             </div>
 
             <div class="card" onclick="openPdf('sem1/RM_GOOGLE.pdf')">
-                <div class="icon">🔎</div> <h3>Research Methodology</h3>
-                <p>Data Collection, Analysis, Thesis Writing, and Ethics.</p>
-                <span class="btn">Open Notes</span>
+                <div class="icon">🔎</div> 
+                <div class="card-content">
+                    <h3>Research Methodology</h3>
+                    <p>Data Collection, Analysis, Thesis Writing.</p>
+                </div>
+                <div class="arrow-indicator">❯</div>
             </div>
 
         </div>
@@ -228,7 +288,19 @@
 
     <script>
         function openPdf(filename) {
-            window.open(filename, '_blank');
+            // Add a small delay for the click animation to be visible
+            setTimeout(() => {
+                window.open(filename, '_blank');
+            }, 150);
+        }
+
+        function goBack() {
+            // Tries to go back in history, or falls back to home
+            if (document.referrer) {
+                history.back();
+            } else {
+                window.location.href = '../index.html'; // Adjust this path if needed
+            }
         }
 
         function filterSubjects() {
@@ -241,7 +313,7 @@
                 let h3 = cards[i].getElementsByTagName("h3")[0];
                 let txtValue = h3.textContent || h3.innerText;
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    cards[i].style.display = "";
+                    cards[i].style.display = ""; // Flex or Grid depending on media query
                 } else {
                     cards[i].style.display = "none";
                 }
