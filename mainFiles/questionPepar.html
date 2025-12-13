@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Exam Paper Archive</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- RESET & BASE STYLES --- */
+        /* --- 1. RESET & BASE STYLES --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -21,9 +22,7 @@
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding-bottom: 50px;
         }
 
         @keyframes gradientBG {
@@ -32,46 +31,61 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- CONTAINER --- */
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin-top: 50px;
-            padding-bottom: 50px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-        }
-
-        p.subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            letter-spacing: 1px;
-        }
-
-        /* --- SEARCH BAR --- */
-        .search-wrapper {
+        /* --- 2. APP HEADER (Sticky) --- */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
             display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .back-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
+
+        .header-title h1 { font-size: 1.2rem; font-weight: 700; margin: 0; }
+        .header-title p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+
+        /* --- 3. CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- 4. SEARCH BAR (Sticky below header) --- */
+        .search-wrapper {
+            position: sticky;
+            top: 80px; 
+            z-index: 90;
+            margin-bottom: 25px;
         }
 
         #searchBox {
-            padding: 15px 25px;
+            padding: 15px 20px;
             width: 100%;
-            max-width: 500px;
             border: none;
-            border-radius: 50px;
+            border-radius: 16px;
             font-size: 1rem;
             outline: none;
             background: rgba(255, 255, 255, 0.15);
@@ -80,167 +94,216 @@
             color: white;
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
         }
 
-        #searchBox::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
+        #searchBox::placeholder { color: rgba(255, 255, 255, 0.7); }
+        #searchBox:focus { background: rgba(255, 255, 255, 0.25); transform: scale(1.01); }
 
-        #searchBox:focus {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            transform: scale(1.02);
-        }
-
-        /* --- GRID LAYOUT --- */
-        .grid {
+        /* --- 5. LAYOUT (Grid vs List) --- */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 20px;
+            /* Desktop Default: Grid */
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         }
 
-        /* --- GLASSMORPHISM CARD --- */
+        /* --- 6. CARD STYLES --- */
         .card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            /* Important for JS search hiding */
-            display: block; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            
+            /* Desktop Flex Column */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .card.hidden {
-            display: none;
-        }
+        .card.hidden { display: none !important; }
 
         .card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .icon {
-            font-size: 3.5rem;
+        .card:active { transform: scale(0.96); }
+
+        /* Icon Container */
+        .icon-box {
+            font-size: 2.5rem;
             margin-bottom: 15px;
-            display: inline-block;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            color: #fff; /* White icon to match theme */
+            background: rgba(255,255,255,0.1);
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
+        .card-content h3 { font-size: 1.2rem; margin-bottom: 5px; font-weight: 600; }
+        .card-content p { font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px; }
 
-        .card p {
-            font-size: 0.95rem;
-            opacity: 0.8;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 30px;
+        /* Desktop Button */
+        .desktop-btn {
+            padding: 8px 20px;
             background: white;
             color: #203a43;
             border-radius: 30px;
-            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: bold;
-            font-size: 0.9rem;
-            transition: transform 0.2s;
+            display: inline-block; /* Visible on Desktop */
         }
 
-        .card:hover .btn {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .mobile-download-icon {
+            display: none; /* Hidden on Desktop */
+            font-size: 1.2rem;
+            opacity: 0.8;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- 7. MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .card-grid { grid-template-columns: 1fr; gap: 12px; }
+
+            .card {
+                /* Switch to Row Layout */
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between; /* Space between text and download icon */
+                padding: 15px;
+                text-align: left;
+                min-height: 80px;
+            }
+
+            .icon-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-bottom: 0;
+                margin-right: 15px;
+            }
+
+            .card-content { flex: 1; }
+            .card-content h3 { font-size: 1rem; margin-bottom: 2px; }
+            .card-content p { font-size: 0.75rem; margin-bottom: 0; }
+
+            .desktop-btn { display: none; } /* Hide large button */
+            .mobile-download-icon { display: block; color: white; } /* Show simple icon */
         }
+
+        /* --- 8. ANIMATIONS --- */
+        .card { animation: fadeInUp 0.6s ease-out backwards; }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .card {
-            animation: fadeInUp 0.8s ease-out backwards;
-        }
-        
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
-        .card:nth-child(5) { animation-delay: 0.5s; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
+    <header class="app-header">
+        <div class="back-btn" onclick="goBack()">
+            ➜
+            <style>.back-btn { transform: rotate(180deg); }</style>
+        </div>
+        <div class="header-title">
             <h1>Exam Archive</h1>
-            <p class="subtitle">Access previous years' question papers instantly</p>
-        </header>
+            <p>Question Papers</p>
+        </div>
+    </header>
 
+    <div class="container">
+        
         <div class="search-wrapper">
-            <input type="text" id="searchBox" placeholder="Search for year or subject...">
+            <input type="text" id="searchBox" placeholder="🔍 Search Pattern or Year...">
         </div>
 
-        <div class="grid" id="cardGrid">
+        <div class="card-grid">
 
-            <div class="card">
-                <i class="fas fa-file-pdf icon"></i>
-                <h3>MCA-1</h3>
-                <p>2019 PATTERN</p>
-                <a href="questionss/mca1.pdf" target="_blank" class="btn">Download PDF</a>
+            <div class="card" onclick="downloadFile('questionss/M.C.A ( 2020 PATTERN )april2025.pdf')">
+                <div class="icon-box"><i class="fas fa-database"></i></div>
+                <div class="card-content">
+                    <h3>MCA APRIL 2025</h3>
+                    <p>2020 PATTERN</p>
+                    <span class="desktop-btn">Download PDF</span>
+                </div>
+                <div class="mobile-download-icon"><i class="fas fa-cloud-download-alt"></i></div>
             </div>
 
-            <div class="card">
-                <i class="fas fa-file-code icon"></i>
-                <h3>MCA (Engineering)-1</h3>
-                <p>2019 Pattern</p>
-                <a href="questionss/mcaEng1.pdf" target="_blank" class="btn">Download PDF</a>
+            <div class="card" onclick="downloadFile('questionss/M.C.A ( 2024 _PATTERN )april2025.pdf')">
+                <div class="icon-box"><i class="fas fa-calculator"></i></div>
+                <div class="card-content">
+                    <h3>MCA APRIL 2025</h3>
+                    <p>2024 PATTERN</p>
+                    <span class="desktop-btn">Download PDF</span>
+                </div>
+                <div class="mobile-download-icon"><i class="fas fa-cloud-download-alt"></i></div>
             </div>
 
-            <!-- <div class="card">
-                <i class="fas fa-database icon"></i>
-                <h3>DSA Paper 2023</h3>
-                <p>Data Structures & Algorithms</p>
-                <a href="#" class="btn">Download PDF</a>
+            <div class="card" onclick="downloadFile('questionss/mca1.pdf')">
+                <div class="icon-box"><i class="fas fa-file-pdf"></i></div>
+                <div class="card-content">
+                    <h3>MCA-1</h3>
+                    <p>2019 PATTERN</p>
+                    <span class="desktop-btn">Download PDF</span>
+                </div>
+                <div class="mobile-download-icon"><i class="fas fa-cloud-download-alt"></i></div>
             </div>
 
-             <div class="card">
-                <i class="fas fa-calculator icon"></i>
-                <h3>Mathematics 2021</h3>
-                <p>Discrete Mathematics</p>
-                <a href="#" class="btn">Download PDF</a>
-            </div> -->
+            <div class="card" onclick="downloadFile('questionss/mcaEng1.pdf')">
+                <div class="icon-box"><i class="fas fa-file-code"></i></div>
+                <div class="card-content">
+                    <h3>MCA (Eng)-1</h3>
+                    <p>2019 PATTERN</p>
+                    <span class="desktop-btn">Download PDF</span>
+                </div>
+                <div class="mobile-download-icon"><i class="fas fa-cloud-download-alt"></i></div>
+            </div>
 
         </div>
     </div>
 
     <script>
-        // Updated search logic to match new class names
+        // 1. Navigation Logic
+        function goBack() {
+            if (document.referrer) {
+                history.back();
+            } else {
+                window.location.href = '../index.html'; // Default fallback
+            }
+        }
+
+        // 2. Download/Open Logic
+        function downloadFile(url) {
+            // Opens in new tab - works best for PDFs on Mobile
+            window.open(url, '_blank');
+        }
+
+        // 3. Search Logic
         document.getElementById('searchBox').addEventListener('keyup', function(event) {
             const query = event.target.value.toLowerCase();
             const cards = document.querySelectorAll('.card');
 
             cards.forEach(card => {
-                // Safely get content
-                const title = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
-                const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('p').textContent.toLowerCase();
 
                 if (title.includes(query) || desc.includes(query)) {
                     card.classList.remove('hidden');
