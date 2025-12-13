@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Student Profile Dashboard</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
@@ -12,15 +12,17 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-decoration: none;
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
         }
 
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.15);
             --glass-border: rgba(255, 255, 255, 0.2);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             --text-color: #ffffff;
             --accent-color: #99f2c8;
             --sidebar-width: 280px;
+            --mobile-nav-height: 70px;
         }
 
         /* --- 2. BACKGROUND --- */
@@ -30,7 +32,9 @@
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             color: var(--text-color);
-            padding: 20px; 
+            /* Padding bottom for mobile nav */
+            padding-bottom: 90px; 
+            overflow-x: hidden;
         }
 
         @keyframes gradientBG {
@@ -46,308 +50,335 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 25px;
             box-shadow: var(--glass-shadow);
         }
 
-        /* --- 4. PROFILE SIDEBAR --- */
-        .profile-sidebar {
+        /* --- 4. LAYOUT MANAGERS (DESKTOP VS MOBILE) --- */
+
+        /* DESKTOP SIDEBAR (Visible only on large screens) */
+        .desktop-sidebar {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            width: var(--sidebar-width);
+            height: calc(100vh - 80px);
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            animation: fadeInDown 1s ease-out;
+            padding: 40px 20px;
+            z-index: 100;
         }
 
-        @media (min-width: 900px) {
-            .profile-sidebar {
-                position: fixed;
-                top: 40px;
-                left: 40px;
-                width: var(--sidebar-width);
-                height: calc(100vh - 80px);
-                padding-top: 60px;
-                z-index: 100;
-            }
-
-            .main-content {
-                margin-left: 360px;
-                margin-top: 20px;
-                max-width: 1000px;
-            }
+        .main-content {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        @media (max-width: 899px) {
-            .profile-sidebar {
-                width: 100%;
-                margin-bottom: 30px;
-            }
-            .main-content {
-                margin-left: 0;
-            }
+        /* MOBILE HEADER (Visible only on small screens) */
+        .mobile-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 20px;
         }
 
+        .mobile-header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* MOBILE BOTTOM NAV (Visible only on small screens) */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: var(--mobile-nav-height);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            border-radius: 50px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .nav-item span { font-size: 1.5rem; margin-bottom: 2px; }
+
+        /* --- 5. PROFILE ELEMENTS --- */
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             border: 3px solid var(--accent-color);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background-color: #ddd;
             background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
             background-size: cover;
-            animation: pulse 3s infinite;
         }
 
-        .student-name { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
-        .student-info { font-size: 1rem; opacity: 0.8; line-height: 1.6; }
+        .mobile-profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+            background-size: cover;
+        }
 
-        /* --- SIDEBAR MENU STYLES --- */
+        .student-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
+        .student-info { font-size: 0.9rem; opacity: 0.8; line-height: 1.4; text-align: center;}
+        
+        .mobile-text h2 { font-size: 1.2rem; margin: 0; }
+        .mobile-text p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+
+        /* --- 6. BUTTONS & LINKS --- */
         .sidebar-menu {
             margin-top: auto;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 10px;
         }
 
-        @media (max-width: 899px) {
-            .sidebar-menu { margin-top: 30px; }
-        }
-
-        .menu-link {
+        .action-btn {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--text-color);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            gap: 10px;
             cursor: pointer;
             border: 1px solid transparent;
-            /* Ensure button/link appearance is consistent */
-            border: none;
-            width: 100%;
-            font-size: 1rem;
         }
 
-        .menu-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid var(--accent-color);
-            transform: translateX(5px);
+        .action-btn:hover, .action-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
         }
 
-        .menu-link span {
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-
-        /* --- 5. MAIN CONTENT HEADER --- */
-        header { 
-            margin-bottom: 40px; 
-            animation: fadeInDown 1s ease-out 0.2s backwards;
-        }
-        
-        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        header p { opacity: 0.8; font-size: 1.1rem; }
-
-        .wave-emoji {
-            display: inline-block;
-            animation: wave 2.5s infinite;
-            transform-origin: 70% 70%;
-        }
-
-        /* --- 6. CARD GRID --- */
+        /* --- 7. DASHBOARD GRID --- */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
         }
 
         .card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 25px;
             position: relative;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             text-align: center;
-            min-height: 200px;
-            animation: fadeInUp 0.8s ease-out backwards;
+            min-height: 180px;
         }
 
-        .card:nth-child(1) { animation-delay: 0.4s; }
-        .card:nth-child(2) { animation-delay: 0.5s; }
-        .card:nth-child(3) { animation-delay: 0.6s; }
-        .card:nth-child(4) { animation-delay: 0.7s; }
-        .card:nth-child(5) { animation-delay: 0.8s; }
-        .card:nth-child(6) { animation-delay: 0.9s; }
+        .card:active { transform: scale(0.95); } /* Mobile tap effect */
+        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
 
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.3);
-        }
+        .icon-box { font-size: 2.5rem; margin-bottom: 10px; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 5px; font-weight: 600; }
+        .card p { font-size: 0.85rem; opacity: 0.7; }
 
-        .icon-box { 
-            font-size: 3rem; 
-            margin-bottom: 15px; 
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); 
-        }
+        /* --- 8. RESPONSIVE LOGIC (MEDIA QUERIES) --- */
         
-        .card h3 { font-size: 1.5rem; margin-bottom: 8px; font-weight: 600; }
-        .card p { font-size: 1rem; opacity: 0.8; }
-
-        .arrow-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.5rem;
-            opacity: 0;
-            transform: translateX(-15px);
-            transition: all 0.3s ease;
-            color: white;
+        /* PC VIEW */
+        @media (min-width: 900px) {
+            .mobile-header, .mobile-bottom-nav { display: none !important; }
+            .main-content { margin-left: 320px; padding-top: 40px;}
         }
 
-        .card:hover .arrow-icon {
-            opacity: 1;
-            transform: translateX(0);
+        /* MOBILE VIEW */
+        @media (max-width: 899px) {
+            .desktop-sidebar { display: none; } /* Hide PC sidebar */
+            
+            body { padding: 0; padding-bottom: 100px; }
+            
+            .mobile-header { display: flex; }
+            .mobile-bottom-nav { display: flex; }
+            
+            .main-content {
+                padding: 15px;
+                margin: 0;
+            }
+
+            /* Make Grid look like an App (2 columns) */
+            .card-grid {
+                grid-template-columns: 1fr 1fr; /* Force 2 columns */
+                gap: 15px;
+            }
+
+            .card {
+                min-height: 140px;
+                padding: 15px;
+                border-radius: 16px;
+            }
+
+            .icon-box { font-size: 2rem; }
+            .card h3 { font-size: 1rem; }
+            .card p { font-size: 0.7rem; }
+            
+            /* Hide arrow on mobile to save space */
+            .arrow-icon { display: none; }
         }
 
-        /* --- 7. ANIMATIONS --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes wave {
-            0% { transform: rotate( 0.0deg); }
-            10% { transform: rotate(14.0deg); }
-            20% { transform: rotate(-8.0deg); }
-            30% { transform: rotate(14.0deg); }
-            40% { transform: rotate(-4.0deg); }
-            50% { transform: rotate(10.0deg); }
-            60% { transform: rotate( 0.0deg); }
-            100% { transform: rotate( 0.0deg); }
-        }
+        /* Section visibility for Tabs */
+        .section-view { display: none; animation: fadeIn 0.4s ease; }
+        .section-view.active { display: block; }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(153, 242, 200, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(153, 242, 200, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(153, 242, 200, 0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
 
-    <aside class="glass-panel profile-sidebar">
+    <aside class="glass-panel desktop-sidebar">
         <div class="profile-img"></div>
-        <h2 class="student-name">Unknown</h2>
+        <h2 class="student-name">Manoj</h2>
         <div class="student-info">
             <p>MCA - Semester I</p>
-            <p>Roll No: 0</p>
+            <p>Roll No: 62</p>
         </div>
-
         <nav class="sidebar-menu">
-            <a href="mainFiles/certificate.html" class="menu-link protected-link">
+            <div class="action-btn protected-link" data-href="mainFiles/certificate.html">
                 <span>🏅</span> Certifications
-            </a>
-            
-            <a href="cv.pdf" target="_blank" class="menu-link protected-link">
+            </div>
+            <div class="action-btn protected-link" data-href="cv.pdf">
                 <span>📄</span> Download CV
-            </a>
+            </div>
         </nav>
     </aside>
 
-    <main class="main-content">
-
-        <div class="card-grid">
-            
-            <div class="card notes" onclick="navigateTo('notes')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">📚</div>
-                <h3>Notes</h3>
-                <p>Download PDFs</p>
+    <header class="mobile-header">
+        <div class="mobile-header-info">
+            <div class="mobile-profile-img"></div>
+            <div class="mobile-text">
+                <h2>Unknown</h2>
+                <p>Roll No: 0 • MCA</p>
             </div>
-
-            <div class="card assignments" onclick="navigateTo('assignments')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">📋</div>
-                <h3>Lab Assignments</h3>
-            </div>
-
-            <div class="card projects" onclick="navigateTo('projects')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">🚀</div>
-                <h3>Question Pepars</h3>
-                <p>Research & Code</p>
-            </div>
-
-            <div class="card aptitude" onclick="navigateTo('aptitude')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">🧠</div>
-                <h3>Aptitude Material</h3>
-                <p>Exam Prep</p>
-            </div>
-
-            <div class="card announcements" onclick="navigateTo('announcements')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">📢</div>
-                <h3>Announcements</h3>
-                <p>Important News</p>
-            </div>
-
-            <div class="card other-notes" onclick="navigateTo('other-notes')">
-                <div class="arrow-icon">➔</div>
-                <div class="icon-box">📂</div>
-                <h3>Other</h3>
-                <p>Misc. Resources</p>
-            </div>
-
         </div>
+        <div style="font-size: 1.5rem;">🔔</div>
+    </header>
+
+    <main class="main-content">
+        
+        <div id="view-home" class="section-view active">
+            <div class="card-grid">
+                <div class="card" onclick="navigateTo('notes')">
+                    <div class="icon-box">📚</div>
+                    <h3>Notes</h3>
+                    <p>PDFs</p>
+                </div>
+                <div class="card" onclick="navigateTo('assignments')">
+                    <div class="icon-box">📋</div>
+                    <h3>Lab</h3>
+                    <p>Assignments</p>
+                </div>
+                <div class="card" onclick="navigateTo('projects')">
+                    <div class="icon-box">🚀</div>
+                    <h3>Papers</h3>
+                    <p>Question Sets</p>
+                </div>
+                <div class="card" onclick="navigateTo('aptitude')">
+                    <div class="icon-box">🧠</div>
+                    <h3>Aptitude</h3>
+                    <p>Preparation</p>
+                </div>
+                <div class="card" onclick="navigateTo('announcements')">
+                    <div class="icon-box">📢</div>
+                    <h3>News</h3>
+                    <p>Updates</p>
+                </div>
+                <div class="card" onclick="navigateTo('other-notes')">
+                    <div class="icon-box">📂</div>
+                    <h3>More</h3>
+                    <p>Resources</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-profile" class="section-view">
+            <div class="glass-panel" style="text-align: center; padding: 40px 20px;">
+                <div class="profile-img" style="margin: 0 auto 20px;"></div>
+                <h2>Manoj</h2>
+                <p style="opacity: 0.8; margin-bottom: 30px;">MCA Semester I - Student Profile</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="action-btn protected-link" data-href="mainFiles/certificate.html">
+                        <span>🏅</span> View Certifications
+                    </div>
+                    <div class="action-btn protected-link" data-href="cv.pdf">
+                        <span>📄</span> Download Resume / CV
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
+
+    <nav class="glass-panel mobile-bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <span>🏠</span>
+            Home
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <span>👤</span>
+            Profile
+        </div>
+    </nav>
 
     <script>
         // 1. Password Protection Logic
-        document.querySelectorAll('.protected-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Ask for password BEFORE preventing the default action
+        document.querySelectorAll('.protected-link').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetUrl = this.getAttribute('data-href');
                 const password = prompt("Please enter the password:");
-
-                // Check password
                 if (password === "ManojMS") {
-                    // Success! Do nothing. 
-                    // The browser will automatically follow the href and target="_blank"
+                    window.location.href = targetUrl;
                 } else {
-                    // Failure: Stop the link from opening
-                    e.preventDefault();
                     alert("Incorrect password. Access denied.");
                 }
             });
         });
 
-        // 2. Card Navigation Logic (Updated)
+        // 2. Navigation Logic
         function navigateTo(section) {
-            // Map the section ID to the specific file path
-            // Ensure these files exist in your 'mainFiles' folder
             const pages = {
                 'notes': 'mainFiles/notes.html',
                 'assignments': 'mainFiles/lab.html',
@@ -356,19 +387,25 @@
                 'announcements': 'mainFiles/announcement.html',
                 'other-notes': 'mainFiles/otherNotes.html'
             };
-
-            const url = pages[section];
-
-            if (url) {
-                window.location.href = url;
+            if (pages[section]) {
+                window.location.href = pages[section];
             } else {
-                console.error("No URL defined for section: " + section);
-                alert("This section is under construction.");
+                alert("Coming soon!");
             }
         }
+
+        // 3. Mobile Tab Switcher
+        function switchTab(tabName, element) {
+            // Hide all views
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            // Show selected view
+            document.getElementById('view-' + tabName).classList.add('active');
+            
+            // Update Nav Icons
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
     </script>
-   
+
 </body>  
 </html>
-
-
