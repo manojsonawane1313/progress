@@ -364,7 +364,7 @@
     </nav>
 
     <script>
-        // 1. Password Protection Logic
+        // 1. Password Protection Logic (For Certifications/CV)
         document.querySelectorAll('.protected-link').forEach(btn => {
             btn.addEventListener('click', function() {
                 const targetUrl = this.getAttribute('data-href');
@@ -377,7 +377,7 @@
             });
         });
 
-        // 2. Navigation Logic
+        // 2. Navigation Logic (Updated for 'other-notes' password)
         function navigateTo(section) {
             const pages = {
                 'notes': 'mainFiles/notes.html',
@@ -387,6 +387,19 @@
                 'announcements': 'mainFiles/announcement.html',
                 'other-notes': 'mainFiles/otherNotes.html'
             };
+
+            // CHECK: specific password for other-notes
+            if (section === 'other-notes') {
+                const password = prompt("Enter Password for Other Notes:");
+                if (password === "6256") {
+                    window.location.href = pages[section];
+                } else {
+                    alert("Incorrect password. Access denied.");
+                }
+                return; // Stop function execution here so it doesn't run the code below
+            }
+
+            // Normal navigation for everything else
             if (pages[section]) {
                 window.location.href = pages[section];
             } else {
@@ -407,5 +420,5 @@
         }
     </script>
 
-</body>  
+</body>   
 </html>
